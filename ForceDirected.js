@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-    var cells = [];
 
 
     var graph = new joint.dia.Graph;
@@ -19,47 +18,113 @@
     });
 
 
-    const createLink = (source, target, type = "standard.Link") => {
-        cells.push({ type: type, source: { id: source }, target: { id: target }, z: -1, attrs: { line: { targetMarker: null } } });
+    const createLink = (source, target, text = "", type = "relation") => {
+        var link = new joint.shapes.standard.Link();
+        link.source(source);
+        link.target(target);
+        link.addTo(graph);
+        link.toBack();
+
+        // link.connector('jumpover', { size: 10 });
+        link.labels([{
+            attrs: {
+                text: {
+                    text: text
+                }
+            }
+        }]);
+        if (type == "relation") {
+            link.attr({
+                line: {
+                    stroke: '#000000',
+                    strokeWidth: 2,
+                    sourceMarker: null,
+                    targetMarker: null
+                }
+            })
+            // link.router('orthogonal');
+        } else {
+            link.attr({
+                line: {
+                    stroke: '#3498DB77',
+                    strokeWidth: 1,
+                    strokeDasharray: '5 5',
+                    strokeDashoffset: 7.5,
+                    sourceMarker: null,
+                    targetMarker: null
+                }
+            })
+        }
     }
 
-    const createShape = (id, text, type = 'standard.Rectangle') => {
+    const createShape = (text, type = 'standard.Rectangle') => {
         if (type == 'standard.Rectangle') {
-            cells.push({ id: id, type: 'standard.Rectangle', size: { width: 100, height: 50 }, attrs: { label: { text: text, fill: 'white' }, body: { fill: '#E67E22', stroke: '#D35400' } }, z: 2 })
+            var rect = new joint.shapes.standard.Rectangle();
+            rect.resize(100, 50);
+            rect.attr({
+                body: {
+                    fill: '#E67E22', stroke: '#D35400'
+                },
+                label: {
+                    text: text,
+                    fill: 'white'
+                }
+            });
+            rect.addTo(graph);
+            rect.toBack();
+            return rect;
         } else if (type == 'standard.Ellipse') {
-            cells.push({ id: id, type: 'standard.Ellipse', size: { width: 100, height: 50 }, attrs: { label: { text: text, fill: 'white' }, body: { fill: '#8ab4f8', stroke: '#8abaf8' } }, z: 2 })
+            var rect = new joint.shapes.standard.Ellipse();
+            rect.resize(80, 30);
+            rect.attr({
+                body: {
+                    fill: '#8ab4f8', stroke: '#8abaf8'
+                },
+                label: {
+                    text: text,
+                    fill: 'white'
+                }
+            });
+            rect.addTo(graph);
+            return rect;
         }
     }
 
 
     const createEntity = (entityName, attributes = [{}]) => {
-        createShape(entityName, entityName, 'standard.Rectangle');
+        const entity = createShape(entityName, 'standard.Rectangle');
 
         attributes &&
             attributes.constructor === Array &&
             attributes.forEach(function (single) {
-                createShape(entityName + single, single, 'standard.Ellipse');
-                createLink(entityName, entityName + single);
+                const attribute = createShape(single, 'standard.Ellipse');
+                createLink(entity, attribute, "", "attrLink");
             })
-
+        return entity;
     }
 
-    const linkEntity = (source, target) => {
-        createLink(source, target);
+    const linkEntity = (source, target, text) => {
+        createLink(source, target, text);
     }
 
-    createEntity("contact", ["id", "phone_number", "join_date", "user_id", "leave_date"]);
-    createEntity("user", ["id", "username", "password", "subscription", "email"]);
-    createEntity("campaign",["id","user_id","name","description","type"]);
-    createEntity("step",["id","campaign_id","text","name","description"]);
-    // createEntity("contact_group")
-    linkEntity("contact", "user");
-    linkEntity("campaign","user");
-    linkEntity("campaign","step")
+    const contact = createEntity("contact", ["id", "user_id", "first_name", "last_name", "phone_number", "join_date", "leave_date"]);
+    const user = createEntity("user", ["id", "username", "password", "subscription", "email", "expire_date"]);
+    const campaign = createEntity("campaign", ["id", "user_id", "name", "description", "type",]);
+    const campaign_contact = createEntity("campaign_contact", ["id", "contanct_id", "campaing_id"]);
+    const step = createEntity("step", ["id", "campaign_id", "text", "name", "description"]);
+    const options = createEntity("options",["id","user_id","key","value"]);
+
+
+    linkEntity(contact, user, "1-N");
+    linkEntity(campaign, user, "1-1");
+    linkEntity(campaign, step, "N-M")
+    linkEntity(campaign_contact, campaign, "N-M")
+    linkEntity(campaign_contact, contact, "N-M")
+    linkEntity(options,user,"1-N");
 
 
 
-    graph.fromJSON({ cells: cells });
+
 
     var graphLayout = new joint.layout.ForceDirected({
         graph: graph,
@@ -67,7 +132,7 @@
         height: 1500,
         gravityCenter: { x: 700, y: 300 },
         charge: 1000,
-        linkDistance: 200,
+        linkDistance: 100,
     });
 
     graphLayout.start();
