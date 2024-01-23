@@ -5,10 +5,10 @@
 
     var graph = new joint.dia.Graph;
     var paper = new joint.dia.Paper({
-        el: document.getElementById('paper'),
+        el: document.getElementById('myDiagram'),
         model: graph,
-        width: 1500,
-        height: 1500,
+        width: "100%",
+        height: "95vh",
         gridSize: 1,
         async: true,
         frozen: true,
@@ -123,7 +123,7 @@
     const step = createEntity("step", ["id", "campaign_id", "text", "name", "description"], "id");
     const execution = createEntity("execution", ["id", "step_id", "contact_id", "execution_date", "status"], "id")
     const options = createEntity("options", ["id", "user_id", "key", "value"], "id");
-    const group = createEntity("group",["id","user_id","name","description"],"id")
+    const group = createEntity("group", ["id", "user_id", "name", "description"], "id")
 
 
     linkEntity(contact, user, "1-N");
@@ -133,7 +133,7 @@
     linkEntity(options, user, "1-N");
     linkEntity(execution, contact, "1-N");
     linkEntity(execution, step, "1-N");
-    linkEntity(group,contact,"N-M");
+    linkEntity(group, contact, "N-M");
 
 
 
@@ -143,9 +143,9 @@
         graph: graph,
         width: 1500,
         height: 1500,
-        gravityCenter: { x: 700, y: 300 },
-        charge: 1000,
-        linkDistance: 100,
+        gravityCenter: { x: 800, y: 300 },
+        charge: 1300,
+        linkDistance: 10,
     });
 
     graphLayout.start();
@@ -172,5 +172,5 @@
     }
 
     $('#btn-layout').on('click', startAnimate);
-
+    
 })();
