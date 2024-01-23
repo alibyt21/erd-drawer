@@ -57,16 +57,19 @@
         }
     }
 
-    const createShape = (text, type = 'standard.Rectangle') => {
+    const createShape = (text, type = 'standard.Rectangle', underline = 'none') => {
+
         if (type == 'standard.Rectangle') {
             var rect = new joint.shapes.standard.Rectangle();
             rect.resize(100, 50);
             rect.attr({
                 body: {
-                    fill: '#E67E22', stroke: '#D35400'
+                    fill: '#E67E22',
+                    stroke: '#D35400'
                 },
                 label: {
                     text: text,
+                    'text-decoration': underline,
                     fill: 'white'
                 }
             });
@@ -78,10 +81,12 @@
             rect.resize(80, 30);
             rect.attr({
                 body: {
-                    fill: '#8ab4f8', stroke: '#8abaf8'
+                    fill: '#8ab4f8',
+                    stroke: '#8abaf8'
                 },
                 label: {
                     text: text,
+                    'text-decoration': underline,
                     fill: 'white'
                 }
             });
@@ -91,13 +96,18 @@
     }
 
 
-    const createEntity = (entityName, attributes = [{}]) => {
+    const createEntity = (entityName, attributes = [{}], primaryKey = null) => {
         const entity = createShape(entityName, 'standard.Rectangle');
 
         attributes &&
             attributes.constructor === Array &&
             attributes.forEach(function (single) {
-                const attribute = createShape(single, 'standard.Ellipse');
+                let attribute;
+                if (primaryKey == single) {
+                    attribute = createShape(single, 'standard.Ellipse', 'underline');
+                } else {
+                    attribute = createShape(single, 'standard.Ellipse');
+                }
                 createLink(entity, attribute, "", "attrLink");
             })
         return entity;
@@ -107,20 +117,23 @@
         createLink(source, target, text);
     }
 
-    const contact = createEntity("contact", ["id", "user_id", "first_name", "last_name", "phone_number", "join_date", "leave_date"]);
-    const user = createEntity("user", ["id", "username", "password", "subscription", "email", "expire_date"]);
-    const campaign = createEntity("campaign", ["id", "user_id", "name", "description", "type",]);
-    const campaign_contact = createEntity("campaign_contact", ["id", "contanct_id", "campaing_id"]);
-    const step = createEntity("step", ["id", "campaign_id", "text", "name", "description"]);
-    const options = createEntity("options",["id","user_id","key","value"]);
+    const contact = createEntity("contact", ["id", "user_id", "first_name", "last_name", "phone_number", "join_date", "leave_date"], "id");
+    const user = createEntity("user", ["id", "username", "password", "subscription", "email", "expire_date"], "id");
+    const campaign = createEntity("campaign", ["id", "user_id", "name", "description", "type",], "id");
+    const step = createEntity("step", ["id", "campaign_id", "text", "name", "description"], "id");
+    const execution = createEntity("execution", ["id", "step_id", "contact_id", "execution_date", "status"], "id")
+    const options = createEntity("options", ["id", "user_id", "key", "value"], "id");
+    const group = createEntity("group",["id","user_id","name","description"],"id")
 
 
     linkEntity(contact, user, "1-N");
-    linkEntity(campaign, user, "1-1");
-    linkEntity(campaign, step, "N-M")
-    linkEntity(campaign_contact, campaign, "N-M")
-    linkEntity(campaign_contact, contact, "N-M")
-    linkEntity(options,user,"1-N");
+    linkEntity(campaign, user, "1-N");
+    linkEntity(campaign, step, "1-N");
+    linkEntity(campaign, contact, "N-M");
+    linkEntity(options, user, "1-N");
+    linkEntity(execution, contact, "1-N");
+    linkEntity(execution, step, "1-N");
+    linkEntity(group,contact,"N-M");
 
 
 
