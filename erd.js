@@ -122,7 +122,8 @@
     const step = createEntity("step", ["id", "campaign_id", "text", "name", "description"], "id");
     const execution = createEntity("execution", ["id", "step_id", "contact_id", "execution_date", "status"], "id")
     const options = createEntity("options", ["id", "user_id", "key", "value"], "id");
-    const group = createEntity("group", ["id", "user_id", "name", "description"], "id")
+    const group = createEntity("group", ["id", "user_id", "name", "description"], "id");
+    const message = createEntity("message",["id","step_id","content","type"],"id")
 
 
     linkEntity(contact, user, "1-N");
@@ -133,7 +134,7 @@
     linkEntity(execution, contact, "1-N");
     linkEntity(execution, step, "1-N");
     linkEntity(group, contact, "N-M");
-
+    linkEntity(step,message);
 
 
 
