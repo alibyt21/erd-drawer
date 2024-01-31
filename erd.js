@@ -199,7 +199,8 @@
     linkEntity(execution, contact, "1-N");
     linkEntity(execution, step, "1-N");
     linkEntity(group, contact, "N-M");
-    linkEntity(step, message);
+    linkEntity(step, message,"1-N");
+    linkEntity(group,user,"1-N");
 
     var graphLayout = new joint.layout.ForceDirected({
         graph: graph,
