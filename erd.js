@@ -13,8 +13,8 @@
         frozen: true,
         cellViewNamespace: joint.shapes,
         sorting: joint.dia.Paper.sorting.APPROX,
-        defaultAnchor: { name: 'modelCenter' },
-        defaultConnectionPoint: { name: 'anchor' }
+        // defaultAnchor: { name: 'modelCenter' },
+        defaultConnectionPoint: { name: 'rectangle' }
     });
 
 
@@ -98,25 +98,6 @@
 
     // Create JointJS elements and add them to the graph as usual.
     // -----------------------------------------------------------
-
-    var el1 = new joint.shapes.html.Element({
-        position: { x: 80, y: 80 },
-        size: { width: 150, height: 200 },
-        label: 'salam',
-        ul: 'test test2 test3 salam in yek field toolanie',
-        select: 'one'
-    });
-    var el2 = new joint.shapes.html.Element({
-        position: { x: 370, y: 160 },
-        size: { width: 150, height: 200 },
-        label: 'Me_too',
-        select: 'two'
-    });
-    var l = new joint.dia.Link({
-        source: { id: el1.id },
-        target: { id: el2.id },
-        attrs: { '.connection': { 'stroke-width': 5, stroke: '#34495E' } }
-    });
 
     const createLink = (source, target, text = "", type = "relation") => {
         var link = new joint.shapes.standard.Link();
@@ -221,31 +202,26 @@
 
     const linkEntity = (source, target, text) => {
         // createLink(source, target, text);
-        var link = new joint.dia.Link({
-            source: { id: source.id },
-            target: { id: target.id },
-            attrs: {
-                line: {
-                    stroke: '#3498DB',
-                    strokeWidth: 3,
-                    strokeDasharray: '5 5',
-                    strokeDashoffset: 7.5,
-                    sourceMarker: {
-                        'type': 'path',
-                        'stroke': 'none',
-                        'fill': '#3498DB',
-                        'd': 'M 20 -10 0 0 20 10 Z \
-                        M 40 -10 20 0 40 10 Z'
-                    },
-                    targetMarker: {
-                        'type': 'path',
-                        'stroke': 'none',
-                        'fill': '#3498DB',
-                        'd': 'M 7.5 -10 2.5 -10 2.5 10 7.5 10 Z \
-                        M 17.5 -10 12.5 -10 12.5 10 17.5 10 Z \
-                        M 40 -10 20 0 40 10 Z'
-                    }
-                }, '.connection': { 'stroke-width': 2, stroke: '#34495E', }
+        var link = new joint.shapes.standard.Link();
+
+        link.source(source);
+        link.target(target);
+        link.attr({
+            line: {
+                stroke: 'black',
+                strokeWidth: 2,
+                sourceMarker: {
+                    'type': 'path',
+                    'stroke': 'black',
+                    'fill': 'gray',
+                    'd': 'M 0 -4 L 10 0 M 0 4 L 10 0'
+                },
+                targetMarker: {
+                    'type': 'path',
+                    'stroke': 'black',
+                    'fill': 'black',
+                    'd': 'M 0 0 L 8 -4 L 8 4 z'
+                }
             }
         });
         graph.addCells([link]);
