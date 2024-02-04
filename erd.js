@@ -2,6 +2,7 @@
 
 (function () {
 
+    const lineSVG = "0";
     const manySVG = "M 0 -4 L 10 0 M 0 4 L 10 0";
     const oneSVG = "M 5 -5 V 5";
     const oneOrManySVG = "M 0 -4 L 10 0 M 0 4 L 10 0 M 10 -5 V 5";
@@ -23,10 +24,8 @@
         defaultConnectionPoint: { name: 'rectangle' }
     });
 
-
     // Create a custom element.
     // ------------------------
-
     joint.shapes.html = {};
     joint.shapes.html.Element = joint.shapes.basic.Rect.extend({
         defaults: joint.util.deepSupplement({
@@ -41,7 +40,6 @@
     // -------------------------------------------------------------------------
 
     joint.shapes.html.ElementView = joint.dia.ElementView.extend({
-
         template: [
             '<div class="html-element">',
             // '<button class="delete">x</button>',
@@ -50,7 +48,6 @@
             '<span></span>', '<br/>',
             '</div>'
         ].join(''),
-
         initialize: function () {
             _.bindAll(this, 'updateBox');
             joint.dia.ElementView.prototype.initialize.apply(this, arguments);
@@ -73,7 +70,6 @@
             this.model.on('change', this.updateBox, this);
             // Remove the box when the model gets removed from the graph.
             this.model.on('remove', this.removeBox, this);
-
             this.updateBox();
         },
         render: function () {
@@ -182,7 +178,6 @@
         }
     }
 
-
     const createEntity = (entityName, attributes = [{}], primaryKey = null) => {
         var entity = new joint.shapes.html.Element({
             position: { x: 80, y: 80 },
@@ -226,13 +221,12 @@
                     'type': 'path',
                     'stroke': 'black',
                     'fill': 'black',
-                    'd': 'M 0 0 L 8 -4 L 8 4 z'
+                    'd': lineSVG
                 }
             }
         });
         graph.addCells([link]);
     }
-
 
     const contact = createEntity("contact", ["id", "user_id", "first_name", "last_name", "phone_number", "join_date", "leave_date"], "id");
     const user = createEntity("user", ["id", "username", "password", "subscription", "email", "expire_date"], "id");
@@ -242,7 +236,6 @@
     const options = createEntity("options", ["id", "user_id", "key", "value"], "id");
     const group = createEntity("group", ["id", "user_id", "name", "description"], "id")
 
-
     linkEntity(contact, user, "1-N");
     linkEntity(campaign, user, "1-N");
     linkEntity(campaign, step, "1-N");
@@ -251,11 +244,6 @@
     linkEntity(execution, contact, "1-N");
     linkEntity(execution, step, "1-N");
     linkEntity(group, contact, "N-M");
-
-
-
-
-
 
     var graphLayout = new joint.layout.ForceDirected({
         graph: graph,

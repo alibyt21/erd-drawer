@@ -2,7 +2,6 @@
 
 (function () {
 
-
     let data = [
         {
             source_entity_title: "داده پایه کسب و کار (مرجع)",
@@ -318,8 +317,6 @@
         // rect.toBack();
         return rect;
     }
-
-
 
     const createSourceEntity = () => {
         let sourceArray = []
