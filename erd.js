@@ -2,6 +2,12 @@
 
 (function () {
 
+    const manySVG = "M 0 -4 L 10 0 M 0 4 L 10 0";
+    const oneSVG = "M 5 -5 V 5";
+    const oneOrManySVG = "M 0 -4 L 10 0 M 0 4 L 10 0 M 10 -5 V 5";
+    const zeroOrManySVG = "M 0 -4 L 10 0 M 0 4 L 10 0 M 0 0 H 10";
+    const oneAndOnlyOneSVG = "M 5 -5 V 5 M 10 -5 V 5";
+
     var graph = new joint.dia.Graph;
     var paper = new joint.dia.Paper({
         el: document.getElementById('myDiagram'),
@@ -214,7 +220,7 @@
                     'type': 'path',
                     'stroke': 'black',
                     'fill': 'gray',
-                    'd': 'M 0 -4 L 10 0 M 0 4 L 10 0'
+                    'd': manySVG
                 },
                 targetMarker: {
                     'type': 'path',
